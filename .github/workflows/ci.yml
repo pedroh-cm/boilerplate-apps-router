@@ -1,14 +1,21 @@
-name: ci
-on: [pull_request]
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
     steps:
-      - name: Checkout Reposity
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
@@ -17,11 +24,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Linting
+      - name: Run Lint
         run: npm run lint
 
-      - name: Testing
+      - name: Run Tests
         run: npm run test
 
-      - name: Build
+      - name: Build Project
         run: npm run build
